@@ -27,10 +27,10 @@ The data is build and saved in the ski_area_cost.ipynb file
 area_dolomiti_BZ = readOGR(dsn=path.expand("data/area_dolomiti_BZ"), layer="area_dolomiti_BZ")
 head(area_dolomiti_BZ@data)
 
-#BZ_dolomiti_ski_areas$prices = as.double(BZ_dolomiti_ski_areas$prices)
-
 ```
-area_dolomiti_BZ is the of Dolomiti municipalities in province of Bolzano.
+area_dolomiti_BZ is the shape representing the Dolomiti municipalities in province of Bolzano, which is the location of the ski areas we will investigating in this section.
+
+We can plot this Dolomiti area:
 
 ```{r}
 
@@ -60,7 +60,7 @@ points(BZ_dolomiti_ski_areas, pch=20, col="blue", cex=2)
 text(
   coordinates(BZ_dolomiti_ski_areas), 
   labels = BZ_dolomiti_ski_areas$NAME_IT, 
-  cex = 0.7, 
+  cex = 0.9, 
   col = "blue",
   pos = 3
   )
@@ -86,16 +86,28 @@ Let's look at the columns types:
 str(BZ_dolomiti_ski_areas@data)
 
 ```
+
 #### What is the price range for ski passes?
 ```{r}
 
 unique(BZ_dolomiti_ski_areas$prices)
+summary(BZ_dolomiti_ski_areas$prices)
+
+```
+We have 7 unique prices, this means that some ski areas have the same ski pass prices.
+
+#### How many observations we have for each price?
+```{r}
+
+barplot(table(BZ_dolomiti_ski_areas$prices))
 
 ```
 
-#### Which ski areas are the most expensive?
+#### Where are the most expensive ski areas?
 
-```{r fig.width=12}
+```{r fig.height=8, fig.width=14}
+
+par(mar=c(0,0,0,0))
 
 subset <- BZ_dolomiti_ski_areas[BZ_dolomiti_ski_areas$prices== max(BZ_dolomiti_ski_areas$prices),] 
 head(subset@data)
@@ -104,15 +116,18 @@ points(subset, pch=20, col="red", cex=2)
 text(
   coordinates(subset), 
   labels = subset$NAME_IT, 
-  cex = 0.7, 
+  cex = 0.9, 
   col = "red",
   pos = 3
   )
 
 ```
-#### Which ski areas are the less expensive?
 
-```{r fig.width=12}
+#### Which ski area is the less expensive and where are it?
+
+```{r fig.height=8, fig.width=14}
+
+par(mar=c(0,0,0,0))
 
 subset <- BZ_dolomiti_ski_areas[BZ_dolomiti_ski_areas$prices== min(BZ_dolomiti_ski_areas$prices),] 
 head(subset@data)
@@ -121,13 +136,15 @@ points(subset, pch=20, col="green", cex=2)
 text(
   coordinates(subset), 
   labels = subset$NAME_IT, 
-  cex = 0.7, 
+  cex = 0.9, 
   col = "green",
   pos = 3
   )
 
 ```
-#### Which are the most extensive resorts?
+
+#### Which are the most extensive resorts (in terms of area)?
+
 ```{r fig.width=12}
 
 sorted <- BZ_dolomiti_ski_areas[order(-BZ_dolomiti_ski_areas$AREA),]
@@ -158,7 +175,9 @@ The k-nearest neighbours criterion assumes that two spatial units are considered
 This definition of neighbourhood ensures that each spatial unit has precisely the same number k of neighbours.
 
 Let's start with 1 neighbour (k = 1):
-```{r fig.height=10, fig.width=15, message=FALSE, warning=FALSE}
+```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
+
+par(mar=c(0,0,0,0))
 
 knn1BZ = knn2nb(knearneigh(BZ_dolomiti_ski_areas, k = 1, longlat = T)) #longlat = T takes into account the fact that the Earth is not flat
 
@@ -168,7 +187,7 @@ plot(knn1BZ, BZ_dolomiti_ski_areas, add = T)
 ```
 
 Let's now try with 2 neighbour (k = 2):
-```{r fig.height=10, fig.width=15}
+```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
 
 knn2BZ = knn2nb(knearneigh(BZ_dolomiti_ski_areas, k = 2, longlat = T))
 
@@ -176,8 +195,9 @@ plot(area_dolomiti_BZ, border = "grey")
 plot(knn2BZ, BZ_dolomiti_ski_areas, add = T)
 
 ```
+
 With k = 4:
-```{r fig.height=10, fig.width=15}
+```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
 
 knn4BZ = knn2nb(knearneigh(BZ_dolomiti_ski_areas, k = 4, longlat = T))
 
@@ -186,8 +206,18 @@ plot(knn4BZ, BZ_dolomiti_ski_areas, add = T)
 
 ```
 
+With k = 6:
+```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
+
+knn6BZ = knn2nb(knearneigh(BZ_dolomiti_ski_areas, k = 6, longlat = T))
+
+plot(area_dolomiti_BZ, border = "grey")
+plot(knn4BZ, BZ_dolomiti_ski_areas, add = T)
+
+```
+
 With k = 8:
-```{r fig.height=10, fig.width=15}
+```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
 
 knn8BZ = knn2nb(knearneigh(BZ_dolomiti_ski_areas, k = 8, longlat = T))
 
@@ -206,8 +236,8 @@ all.linkedT
 
 ```
 
-We found that the minimum threshold distance is 0.07901 km, which is actually very small, but it is OK since we are working with a fairly small area.
-After this calculation we now know tath the cut-off distance has to be greater than 0.07901.
+We found that the minimum threshold distance is 0.07901, which is actually very small, but it is OK since we are working with a fairly small area.
+After this calculation we now know that the cut-off distance has to be greater than 0.07901.
 
 We can try different values of the cut-off distance for different neighbourhood definitions:
 ```{r}
@@ -217,14 +247,14 @@ dnb079
 
 ```
 
-```{r}
+```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
 
 plot(area_dolomiti_BZ, border = "grey", xlab = "", ylab = "", xlim = NULL)
 title(main = "d nearest neighbours, d = 0.079") 
 plot(dnb079, BZ_dolomiti_ski_areas, add = TRUE, col = "blue")
 
 ```
-```{r}
+```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
 
 dnb089 = dnearneigh(BZ_dolomiti_ski_areas, 0, 0.0891, longlat=T)
 plot(area_dolomiti_BZ, border = "grey", xlab = "", ylab = "", xlim = NULL)
@@ -233,7 +263,7 @@ plot(dnb089, BZ_dolomiti_ski_areas, add = TRUE, col = "green")
 dnb089
 
 ```
-```{r}
+```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
 
 dnb099 = dnearneigh(BZ_dolomiti_ski_areas, 0, 0.0991, longlat=T)
 plot(area_dolomiti_BZ, border = "grey", xlab = "", ylab = "", xlim = NULL)
@@ -243,29 +273,56 @@ dnb099
 
 ```
 We have the same results with d = 0.089 and d = 0.99, thus we can try to increase the values further:
-```{r}
+
+```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
+
+dnb109 = dnearneigh(BZ_dolomiti_ski_areas, 0, 0.1091, longlat=T)
+plot(area_dolomiti_BZ, border = "grey", xlab = "", ylab = "", xlim = NULL)
+title(main = "d nearest neighbours, d = 0.1991") 
+plot(dnb199, BZ_dolomiti_ski_areas, add = TRUE, col = "yellow")
+dnb199
+
+```
+```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
+
+dnb159 = dnearneigh(BZ_dolomiti_ski_areas, 0, 0.1591, longlat=T)
+plot(area_dolomiti_BZ, border = "grey", xlab = "", ylab = "", xlim = NULL)
+title(main = "d nearest neighbours, d = 0.1991") 
+plot(dnb199, BZ_dolomiti_ski_areas, add = TRUE, col = "orange")
+dnb199
+
+```
+
+```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
 
 dnb199 = dnearneigh(BZ_dolomiti_ski_areas, 0, 0.1991, longlat=T)
 plot(area_dolomiti_BZ, border = "grey", xlab = "", ylab = "", xlim = NULL)
 title(main = "d nearest neighbours, d = 0.1991") 
-plot(dnb199, BZ_dolomiti_ski_areas, add = TRUE, col = "green")
+plot(dnb199, BZ_dolomiti_ski_areas, add = TRUE, col = "black")
 dnb199
 
 ```
+
 Obviously with the critical cut-off the links, and therefore the number of neighbours, can only teds to grow rapidly with increasing distance.
 
 ## Defining spatial weights
 Once the neighbourhood relationships between observations have been defined, the spatial weights matrix can be created. In our case we will calculate a standardised spatial weight matrix for each list of critical and k-nearest neighbours created earlier.
+
 ```{r}
 
+# knn
 knn1BZ.listw = nb2listw(knn1BZ, style = "W")
 knn2BZ.listw = nb2listw(knn2BZ, style = "W")
 knn4BZ.listw = nb2listw(knn4BZ, style = "W")
+knn6BZ.listw = nb2listw(knn6BZ, style = "W")
 knn8BZ.listw = nb2listw(knn8BZ, style = "W")
 
+# critical cut-off
 dnb079.listw = nb2listw(dnb079,style="W")
 dnb089.listw = nb2listw(dnb089,style="W")
 dnb099.listw = nb2listw(dnb099,style="W")
+dnb109.listw = nb2listw(dnb109,style="W")
+dnb159.listw = nb2listw(dnb159,style="W")
 dnb199.listw = nb2listw(dnb199,style="W")
 
 
@@ -274,21 +331,11 @@ str(dnb079.listw)
 
 ```
 
+
 ## The Moran’s I test of spatial autocorrelation
 We now perform Moran's I test of spatial autocorrelation with reference to the variable corresponding to the price of ski passes (BZ_dolomiti_ski_areas$prices). The inspection of these variable may in fact suggest the presence of some form of spatial dependence.
 
 Let's first plot the quantile distribution of the prices variable:
-```{r fig.height=8, fig.width=14}
-
-par(mar=c(0,0,0,0))
-
-brks = round(quantile(BZ_dolomiti_ski_areas$prices), digits = 3)
-colours = grey((length(brks):2)/length(brks))
-plot(area_dolomiti_BZ, col = "#E29B50")
-points(BZ_dolomiti_ski_areas, col = colours[findInterval(BZ_dolomiti_ski_areas$prices, brks, all.inside = TRUE)], pch = 19, cex=3)
-title(main = "Ski resrorts' skipass prices")
-
-```
 
 ```{r fig.height=8, fig.width=14}
 
@@ -296,18 +343,11 @@ brks = round(quantile(BZ_dolomiti_ski_areas$prices), digits = 3)
 colours = grey((length(brks):2)/length(brks))
 plot(area_dolomiti_BZ, col = "#E29B50")
 
-points(BZ_dolomiti_ski_areas, col = "black", pch = 19, cex=3.3)
+points(BZ_dolomiti_ski_areas, col = "black", pch = 19, cex=3.3) # add a layer to obtain a contour effect
 points(BZ_dolomiti_ski_areas, col = colours[findInterval(BZ_dolomiti_ski_areas$prices, brks, all.inside = TRUE)], pch = 19, cex=3)
 title(main = "Ski resrorts' skipass prices")
 
 ```
-
-
-
-
-
-
-
 
 Finally we perform the global Moran's I test to the prices variable with different specifications of the spatial weights matrix:
 ```{r}
@@ -315,23 +355,32 @@ Finally we perform the global Moran's I test to the prices variable with differe
 moran.test(BZ_dolomiti_ski_areas$prices, knn1BZ.listw, randomisation = FALSE)
 moran.test(BZ_dolomiti_ski_areas$prices, knn2BZ.listw, randomisation = FALSE)
 moran.test(BZ_dolomiti_ski_areas$prices, knn4BZ.listw, randomisation = FALSE)
+moran.test(BZ_dolomiti_ski_areas$prices, knn6BZ.listw, randomisation = FALSE)
 moran.test(BZ_dolomiti_ski_areas$prices, knn8BZ.listw, randomisation = FALSE)
+
 moran.test(BZ_dolomiti_ski_areas$prices, dnb079.listw, randomisation = FALSE)
 moran.test(BZ_dolomiti_ski_areas$prices, dnb089.listw, randomisation = FALSE)
 moran.test(BZ_dolomiti_ski_areas$prices, dnb099.listw, randomisation = FALSE)
+moran.test(BZ_dolomiti_ski_areas$prices, dnb109.listw, randomisation = FALSE)
+moran.test(BZ_dolomiti_ski_areas$prices, dnb159.listw, randomisation = FALSE)
 moran.test(BZ_dolomiti_ski_areas$prices, dnb199.listw, randomisation = FALSE)
 
 ```
-The test is performed under the assumption of normality since radomisation parameter is set on False. Let's try under the assumption of randomization:
+
+The test was performed under the assumption of normality since radomisation parameter is set on False. Let's try under the assumption of randomization:
 ```{r}
 
 moran.test(BZ_dolomiti_ski_areas$prices, knn1BZ.listw, randomisation = TRUE)
 moran.test(BZ_dolomiti_ski_areas$prices, knn2BZ.listw, randomisation = TRUE)
 moran.test(BZ_dolomiti_ski_areas$prices, knn4BZ.listw, randomisation = TRUE)
+moran.test(BZ_dolomiti_ski_areas$prices, knn6BZ.listw, randomisation = TRUE)
 moran.test(BZ_dolomiti_ski_areas$prices, knn8BZ.listw, randomisation = TRUE)
+
 moran.test(BZ_dolomiti_ski_areas$prices, dnb079.listw, randomisation = TRUE)
 moran.test(BZ_dolomiti_ski_areas$prices, dnb089.listw, randomisation = TRUE)
 moran.test(BZ_dolomiti_ski_areas$prices, dnb099.listw, randomisation = TRUE)
+moran.test(BZ_dolomiti_ski_areas$prices, dnb109.listw, randomisation = TRUE)
+moran.test(BZ_dolomiti_ski_areas$prices, dnb159.listw, randomisation = TRUE)
 moran.test(BZ_dolomiti_ski_areas$prices, dnb199.listw, randomisation = TRUE)
 
 ```
@@ -343,22 +392,25 @@ Lastly, we can apply the test with different specifications of the spatial weigh
 moran.mc(BZ_dolomiti_ski_areas$prices, knn1BZ.listw, nsim = 999)
 moran.mc(BZ_dolomiti_ski_areas$prices, knn2BZ.listw, nsim = 999)
 moran.mc(BZ_dolomiti_ski_areas$prices, knn4BZ.listw, nsim = 999)
+moran.mc(BZ_dolomiti_ski_areas$prices, knn6BZ.listw, nsim = 999)
 moran.mc(BZ_dolomiti_ski_areas$prices, knn8BZ.listw, nsim = 999)
+
 moran.mc(BZ_dolomiti_ski_areas$prices, dnb079.listw, nsim = 999)
 moran.mc(BZ_dolomiti_ski_areas$prices, dnb089.listw, nsim = 999)
 moran.mc(BZ_dolomiti_ski_areas$prices, dnb099.listw, nsim = 999)
+moran.mc(BZ_dolomiti_ski_areas$prices, dnb109.listw, nsim = 999)
+moran.mc(BZ_dolomiti_ski_areas$prices, dnb159.listw, nsim = 999)
 moran.mc(BZ_dolomiti_ski_areas$prices, dnb199.listw, nsim = 999)
 
 ```
 
-**scrivi che quando vengono considerati più neigbour (sia nel knn che nel cut off) sembra esistere una piccola (riporta risultati) spatial autocorrelation globale positiva.
+The values are only slightly different according to the 3 approaches used (especially between normaliti and radomization assumptions). When more neighbours are considered (both in the knn and in the critical cut-off) there seems to be a very small positive global spatial autocorrelation. In the most significant case of the knn, with 6 and 8 neighbours and in the case of the highest distances with the critical cut-off, it seems to reach at most a positive correlation of 0.12. This is actually very low and makes us think that there is no effective global correlation.
 
-Riflessioni sul perchè non ci sia spatial autocorrelation.
 
 ## The Moran’s I test of spatial autocorrelation in OLS residuals
 As shown in class, Moran's I test can also be used as a diagnostic tool to detect the presence of spatial autocorrelation in the residuals of a linear regression model.
 
-Let's try to apply these to our data:
+Let's try to apply these to our data considering AREA column:
 ```{r}
 
 LinearSolow = lm(prices ~ AREA, BZ_dolomiti_ski_areas)
@@ -408,6 +460,13 @@ mplot_knn4BZ = moran.plot(
   return_df=F
   )
 
+mplot_knn6BZ = moran.plot(
+  BZ_dolomiti_ski_areas$prices, 
+  listw=knn6BZ.listw, 
+  main="Moran scatterplot - knn6BZ", 
+  return_df=F
+  )
+
 mplot_knn8BZ = moran.plot(
   BZ_dolomiti_ski_areas$prices, 
   listw=knn8BZ.listw, 
@@ -436,6 +495,20 @@ mplot_dnb099 = moran.plot(
   return_df=F
   )
 
+mplot_dnb109 = moran.plot(
+  BZ_dolomiti_ski_areas$prices, 
+  listw=dnb109.listw, 
+  main="Moran scatterplot - dnb109", 
+  return_df=F
+  )
+
+mplot_dnb159 = moran.plot(
+  BZ_dolomiti_ski_areas$prices, 
+  listw=dnb159.listw, 
+  main="Moran scatterplot - dnb159", 
+  return_df=F
+  )
+
 mplot_dnb199 = moran.plot(
   BZ_dolomiti_ski_areas$prices, 
   listw=dnb199.listw, 
@@ -443,21 +516,25 @@ mplot_dnb199 = moran.plot(
   return_df=F
   )
 ```
+
 The points (ski areas) that are relatively more influential than others in determining the observed value of global Moran's I are represented by marked points. These points are identified as having the greatest influence on the regression line based on standard criteria such as Cook's distance and linkages.
 
 For this reason it may be useful to map regions of significant influence encoded by their quadrant in Moran's scatterplot. First, we need to identify the influential regions (which was already visible form the plots):
+
 ```{r}
 
-hotspot = as.numeric(row.names(as.data.frame(summary(mplot_dnb199))))
+hotspot = as.numeric(row.names(as.data.frame(summary(mplot_dnb159))))
+hotspot = as.numeric(row.names(as.data.frame(summary(mplot_knn6BZ))))
 
 ```
 
 We can also obtain the spatially lagged values (wx) of the variable of interest for the influential regions:
 ```{r}
 
-BZ_dolomiti_ski_areas$wx = lag.listw(dnb199.listw, BZ_dolomiti_ski_areas$prices)
+BZ_dolomiti_ski_areas$wx = lag.listw(knn6BZ.listw, BZ_dolomiti_ski_areas$prices)
 
 ```
+
 
 Moreover we can assign each influential region to the proper Moran scatterplot quadrant:
 
@@ -480,13 +557,13 @@ table(BZ_dolomiti_ski_areas$quadrant)
 
 ```
 
-And we can plot the results:
-```{r fig.height=10, fig.width=10}
+And we can plot the results, where is our seignificant point on the map:
+```{r fig.height=8, fig.width=14}
 
 # which allows us to plot the map of the regions with influence by typing
 BZ_dolomiti_ski_areas$colours[BZ_dolomiti_ski_areas$quadrant == "None"] = "#EBEBEB"
 BZ_dolomiti_ski_areas$colours[BZ_dolomiti_ski_areas$quadrant == "HH"] = "#745296" 
-BZ_dolomiti_ski_areas$colours[BZ_dolomiti_ski_areas$quadrant == "LL"] = "#8B9EB7" # 2 low low 
+BZ_dolomiti_ski_areas$colours[BZ_dolomiti_ski_areas$quadrant == "LL"] = "#8B9EB7" # 1 low low 
 BZ_dolomiti_ski_areas$colours[BZ_dolomiti_ski_areas$quadrant == "LH"] = "#E85F5C"
 BZ_dolomiti_ski_areas$colours[BZ_dolomiti_ski_areas$quadrant == "HL"] = "#FFF07C"
 
@@ -512,12 +589,16 @@ The Moran scatterplot represents a useful and intuitive visual representation of
 
 ```{r}
 
-lmI = localmoran(BZ_dolomiti_ski_areas$prices, dnb199.listw)
+lmI = localmoran(BZ_dolomiti_ski_areas$prices, dnb159.listw)
+head(lmI)
+
+lmI = localmoran(BZ_dolomiti_ski_areas$prices, knn6BZ.listw)
 head(lmI)
 
 ```
+
 We can also plot the distribution of local Moran's I-index values:
-```{r fig.height=10, fig.width=10}
+```{r fig.height=8, fig.width=14}
 
 brks = sort(as.numeric(lmI[,1]))
 colours = grey((0:length(lmI[,1]))/length(lmI[,1]))
@@ -529,11 +610,11 @@ title(main = "Local Moran's I values")
 
 ```
 
-**dire**: grazie a questa rappresentazione possiamo identificare quali ski aree hanno una correlazione spaziale LOCALE positiva, in bianco, e quali negativa, in nero.
-Tuttavia, è bene tenere a mente che questo indice non non ci fornisce informazioni sulla scignificatività dei risultati. Per quello abbiamo bisogno --> leggi sotto
+With this representation we can identify which ski areas have a positive **local** spatial correlation, in white (or light grey), and which have a negative one, in dark.
+However, it should be borne in mind that this index does not provide us with information on the significance of results.
 
 As previously done with the global index, Moran's local I-statistic can also be tested for deviations using the null hypothesis of no local spatial autocorrelation and thus can provide the statistical significance of the local spatial patterns detected by Moran's scatterplot. Thus, we can map the corresponding p-values:
-```{r fig.height=10, fig.width=10}
+```{r fig.height=8, fig.width=14}
 
 pval = as.numeric(lmI[,5])
 BZ_dolomiti_ski_areas$colpval[pval>0.05] = "white" 
@@ -553,12 +634,13 @@ title(main="Local Moran's I significance map")
 
 ```
 
-Solo pochi delle ski aree hanno una correlazione spaziale significativa. Queste sono in basso a sinistra nella mappa e sono: inserisci nomi.
+Only a few of the ski areas have a significant spatial correlation. These are at the bottom left of the map and are: Carezza, Nova Ponente, Panorama, Pietralba e Passo Olcini (which also correspond to point 17, the one with the most influence)
 
 
+### Conclusion
 
-CONCLUSIONE
+If we consider the global spatial autocorrelation, we did not obtain significant results with most of the chosen neighbouroods. The p-value was significant only when we considered many neighbours for each ski area; however, the Moran I statistic value was just above 0, indicating an extremely slight positive correlation. 
 
-Se consideriamo la global spatial autocorrelation non abbiamo ottenuto risultati significativi con la maggiorparte delle neighbourood scelte. Il p-value era significativo solo quando abbiamo considerato molti vicini per ogni ski area; tuttavia il valore di Index era di poco sopra lo 0, ad indicare una correlazione positiva estremamente lieve. 
+On the other hand, considering the local index we find (again using quite high number of neighbours or a quite high distance) that there are some ski areas that have significant positive or negative spatial autocorrelation.
 
-Quando però consideriamo l'indice locale troviamo (sempre utilizzando le neighbourood con molti vicini (scrivi meglio)) che ci sono delle ski aree con spatial autocorrelation positiva o negativa significativa.
+
