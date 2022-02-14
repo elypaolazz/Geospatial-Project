@@ -5,14 +5,24 @@ output:
     df_print: paged
 ---
 
-Since we are unable to find a complete resource containing the costs of the Skipass for the Dolomites area, the data used in this notebook was created in the file xx.ipynb by consulting the price lists on the websites of the various resorts.
-The aim is therefore to perform a spatial statistics analysis to understand whether there is a relationship between the location of resort and their prices. In particular, we consider the starting points of each ski lift as coordinates of the ski area.
+### Introduction
+
+This notebook aims to perform a spatial statistics analysis concerning ski pass prices in the area (the Dolomite area in the province of Bolzano), investigating whether there are any relationships between them.
+Since we are unable to find a complete resource containing the costs of the ski pass for the Dolomiti area, the data used in this notebook was created in the file xx.ipynb by consulting the price lists on the websites of the various resorts.
+The aim is therefore to perform a spatial statistics analysis to understand whether there is a relationship between the location of resort and their prices. In particular, we consider the representative points of each ski resort as coordinates of the ski area.
 
 ### Set up
 ```{r message=FALSE, warning=FALSE}
 
-library(rgdal)
-library(spdep)
+if(!require(rgdal)) {
+    install.packages("rgdal")
+    library(rgdal)
+}
+
+if(!require(spdep)) {
+    install.packages("spdep")
+    library(spdep)
+}
 
 ```
 
