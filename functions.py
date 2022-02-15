@@ -169,3 +169,10 @@ def load_BZ_dolomiti_ski_lift_data(path):
     ski_lifts_BZ = ski_lifts_BZ.to_crs(epsg=4326)
     ski_lifts_BZ_clipped = ski_lifts_BZ.clip(load_province_dolomiti_mun(21, 'data\Limiti01012021_g'))
     return ski_lifts_BZ_clipped
+
+def load_BZ_dolomiti_ski_lift_data(path):
+    ski_lifts_path = path
+    ski_lifts_BZ = gpd.read_file(ski_lifts_path)
+    ski_lifts_BZ = ski_lifts_BZ.to_crs(epsg=4326)
+    ski_lifts_BZ_clipped = ski_lifts_BZ.clip(load_province_dolomiti_mun(21, 'data\Limiti01012021_g'))
+    return ski_lifts_BZ_clipped

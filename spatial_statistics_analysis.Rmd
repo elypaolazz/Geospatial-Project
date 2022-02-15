@@ -7,11 +7,12 @@ output:
 
 ### Introduction
 
-This notebook aims to perform a spatial statistics analysis concerning ski pass prices in the area (the Dolomite area in the province of Bolzano), investigating whether there are any relationships between them.
-Since we are unable to find a complete resource containing the costs of the ski pass for the Dolomiti area, the data used in this notebook was created in the file xx.ipynb by consulting the price lists on the websites of the various resorts.
+This notebook aims to perform a spatial statistics analysis concerning ski pass prices in the area (the Dolomiti area in the province of Bolzano), investigating whether there are any relationships between them.
+Since we are unable to find a complete resource containing the costs of the ski pass for the Dolomiti area, the data used in this notebook was created in the file `ski_area_cost.ipynb` by consulting the price lists on the websites of the various resorts.
 The aim is therefore to perform a spatial statistics analysis to understand whether there is a relationship between the location of resort and their prices. In particular, we consider the representative points of each ski resort as coordinates of the ski area.
 
 ### Set up
+
 ```{r message=FALSE, warning=FALSE}
 
 if(!require(rgdal)) {
@@ -22,6 +23,11 @@ if(!require(rgdal)) {
 if(!require(spdep)) {
     install.packages("spdep")
     library(spdep)
+}
+
+if(!require(boot)) {
+    install.packages("boot")
+    library(boot)
 }
 
 ```
@@ -38,6 +44,7 @@ area_dolomiti_BZ = readOGR(dsn=path.expand("data/area_dolomiti_BZ"), layer="area
 head(area_dolomiti_BZ@data)
 
 ```
+
 area_dolomiti_BZ is the shape representing the Dolomiti municipalities in province of Bolzano, which is the location of the ski areas we will investigating in this section.
 
 We can plot this Dolomiti area:
@@ -53,6 +60,7 @@ plot(area_dolomiti_BZ)
 These data represent the coordinates and some information about the representative points of each ski resort and the prices of their ski passes. We computed the representative points in the dataset preprocessing in Python. The various ski areas originally had a Polygon shape, therefore it would have been necessary to calculate a reference point (centroid or representative point) to perform the spatial statistics analyses. We preferred the calculation of the representative point since, due to their shape, the centroids were prone to fall outside the resort area in some cases.
 
 Obviously, these resorts are composed of several slopes and lifts, in fact the price of the ski pass includes access to the entire area to which it refers.
+
 ```{r}
 
 BZ_dolomiti_ski_areas = readOGR(dsn=path.expand("data/ski_slopes_BZ_dissolved"), layer="ski_slopes_BZ_dissolved")
@@ -133,7 +141,7 @@ text(
 
 ```
 
-#### Which ski area is the less expensive and where are it?
+#### Which ski area is the less expensive and where is it?
 
 ```{r fig.height=8, fig.width=14}
 
@@ -170,6 +178,7 @@ text(
   )
 
 ```
+
 There are clearly much larger ski areas than others.
 
 ---
@@ -250,7 +259,8 @@ We found that the minimum threshold distance is 0.07901, which is actually very 
 After this calculation we now know that the cut-off distance has to be greater than 0.07901.
 
 We can try different values of the cut-off distance for different neighbourhood definitions:
-```{r}
+
+```{r message=FALSE, warning=FALSE}
 
 dnb079 = dnearneigh(BZ_dolomiti_ski_areas, 0, 0.0791, longlat=T)
 dnb079
@@ -264,6 +274,7 @@ title(main = "d nearest neighbours, d = 0.079")
 plot(dnb079, BZ_dolomiti_ski_areas, add = TRUE, col = "blue")
 
 ```
+
 ```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
 
 dnb089 = dnearneigh(BZ_dolomiti_ski_areas, 0, 0.0891, longlat=T)
@@ -273,6 +284,7 @@ plot(dnb089, BZ_dolomiti_ski_areas, add = TRUE, col = "green")
 dnb089
 
 ```
+
 ```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
 
 dnb099 = dnearneigh(BZ_dolomiti_ski_areas, 0, 0.0991, longlat=T)
@@ -282,24 +294,26 @@ plot(dnb099, BZ_dolomiti_ski_areas, add = TRUE, col = "green")
 dnb099
 
 ```
+
 We have the same results with d = 0.089 and d = 0.99, thus we can try to increase the values further:
 
 ```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
 
 dnb109 = dnearneigh(BZ_dolomiti_ski_areas, 0, 0.1091, longlat=T)
 plot(area_dolomiti_BZ, border = "grey", xlab = "", ylab = "", xlim = NULL)
-title(main = "d nearest neighbours, d = 0.1991") 
-plot(dnb199, BZ_dolomiti_ski_areas, add = TRUE, col = "yellow")
-dnb199
+title(main = "d nearest neighbours, d = 0.1091")
+plot(dnb109, BZ_dolomiti_ski_areas, add = TRUE, col = "yellow")
+dnb109
 
 ```
+
 ```{r fig.height=8, fig.width=14, message=FALSE, warning=FALSE}
 
 dnb159 = dnearneigh(BZ_dolomiti_ski_areas, 0, 0.1591, longlat=T)
 plot(area_dolomiti_BZ, border = "grey", xlab = "", ylab = "", xlim = NULL)
-title(main = "d nearest neighbours, d = 0.1991") 
-plot(dnb199, BZ_dolomiti_ski_areas, add = TRUE, col = "orange")
-dnb199
+title(main = "d nearest neighbours, d = 0.1591") 
+plot(dnb159, BZ_dolomiti_ski_areas, add = TRUE, col = "orange")
+dnb159
 
 ```
 
@@ -414,7 +428,7 @@ moran.mc(BZ_dolomiti_ski_areas$prices, dnb199.listw, nsim = 999)
 
 ```
 
-The values are only slightly different according to the 3 approaches used (especially between normaliti and radomization assumptions). When more neighbours are considered (both in the knn and in the critical cut-off) there seems to be a very small positive global spatial autocorrelation. In the most significant case of the knn, with 6 and 8 neighbours and in the case of the highest distances with the critical cut-off, it seems to reach at most a positive correlation of 0.12. This is actually very low and makes us think that there is no effective global correlation.
+The values are only slightly different according to the 3 approaches used (especially between normality and radomization assumptions). When more neighbours are considered (both in the knn and in the critical cut-off) there seems to be a very small positive global spatial autocorrelation. In the most significant case of the knn, with 6 and 8 neighbours and in the case of the highest distances with the critical cut-off, it seems to reach at most a positive correlation of 0.12. This is actually very low and makes us think that there is no effective global correlation.
 
 
 ## The Moran’s I test of spatial autocorrelation in OLS residuals
@@ -427,7 +441,74 @@ LinearSolow = lm(prices ~ AREA, BZ_dolomiti_ski_areas)
 summary(LinearSolow) 
 
 ```
-Since we get a quite high p-value in the linear regression model, we understand that it is not worth investigating further.
+The results of linear regression are slightly significant, thus we can plot the studentized residuals, which can give a hint about the presence of spatial dependence in the residuals:
+
+```{r fig.height=8, fig.width=14}
+
+studres = rstudent(LinearSolow)
+resdistr = quantile(studres) 
+colours = grey((length(resdistr):2)/length(resdistr))
+
+plot(area_dolomiti_BZ, col = "#E29B50")
+points(BZ_dolomiti_ski_areas, col = colours[findInterval(studres, resdistr, all.inside = T)], cex = 2.5, pch = 18)
+
+```
+
+We can now apply the test to the studentized residuals of the `LinearSolow` model, for different specifications of the spatial weights matrix
+
+```{r}
+
+lm.morantest(LinearSolow, knn1BZ.listw, resfun = rstudent)
+lm.morantest(LinearSolow, knn2BZ.listw, resfun = rstudent)
+lm.morantest(LinearSolow, knn4BZ.listw, resfun = rstudent)
+lm.morantest(LinearSolow, knn6BZ.listw, resfun = rstudent)
+lm.morantest(LinearSolow, knn8BZ.listw, resfun = rstudent)
+
+lm.morantest(LinearSolow, dnb079.listw, resfun = rstudent)
+lm.morantest(LinearSolow, dnb089.listw, resfun = rstudent)
+lm.morantest(LinearSolow, dnb099.listw, resfun = rstudent)
+lm.morantest(LinearSolow, dnb109.listw, resfun = rstudent)
+lm.morantest(LinearSolow, dnb159.listw, resfun = rstudent)
+lm.morantest(LinearSolow, dnb199.listw, resfun = rstudent)
+
+```
+
+Again, as in the previous approaches, we obtain the lowest p-values in the specifications that consider more neighbours. However, the p-values are quite high in this case.
+
+Let's apply the test under permutation bootstrap as final step:
+
+```{r}
+
+
+LinearSolow.lmx = lm(
+  prices ~ AREA, 
+  data = BZ_dolomiti_ski_areas, 
+  x = TRUE
+  )
+
+MoraneI.boot = function(var, i, ...) {
+  var = var[i]
+  lmres = lm(var ~ LinearSolow.lmx$x - 1)
+  return(moran(x = residuals(lmres), ...)$I)	  
+}
+
+
+boot1 = boot(
+  residuals(LinearSolow.lmx),
+  statistic = MoraneI.boot,  
+  R = 999, 
+  sim = "permutation", 
+  listw = knn8BZ.listw,  
+  n = length(knn8BZ.listw$neighbours), 
+  S0 = Szero(knn8BZ.listw)
+  )
+
+ti = (boot1$t0 - mean(boot1$t))/sqrt(var(boot1$t))  
+
+plot(boot1)
+
+```
+COMMENTA
 
 ---
 
@@ -647,10 +728,92 @@ title(main="Local Moran's I significance map")
 Only a few of the ski areas have a significant spatial correlation. These are at the bottom left of the map and are: Carezza, Nova Ponente, Panorama, Pietralba e Passo Olcini (which also correspond to point 17, the one with the most influence)
 
 
-### Conclusion
+## Conclusion
 
 If we consider the global spatial autocorrelation, we did not obtain significant results with most of the chosen neighbouroods. The p-value was significant only when we considered many neighbours for each ski area; however, the Moran I statistic value was just above 0, indicating an extremely slight positive correlation. 
 
 On the other hand, considering the local index we find (again using quite high number of neighbours or a quite high distance) that there are some ski areas that have significant positive or negative spatial autocorrelation.
 
+---
+#test
+
+## Spatial regression models
+
+In this point we deal with the three main specifications of linear spatial regression models that can be considered once the hypothesis of no spatial autocorrelation in the OLS residuals is violated:
+
+* The Spatial Durbin model (SDM),
+* The Spatial autoregressive model (SAR),
+* The Spatial Durbin error eodel (SDEM) 
+* The Spatial error model (SEM)
+* The Lagged independent variable model (LDM) 
+
+### 1. Models Estimation
+
+In order to estimate the SDM model using the Maximum likelihood estimator we can use the function `lagsarlm` with "mixed" specification :
+
+```{r}
+library(spatialreg) 
+
+SDM = lagsarlm(
+  prices ~ AREA, 
+  data = BZ_dolomiti_ski_areas, 
+  listw = knn6BZ.listw,
+  type = "mixed"
+  )
+
+summary(SDM)
+
+```
+
+To estimate the SAR model using the Maximum likelihood estimator we can use the function "lagsarlm",
+
+```{r}
+
+SAR = lagsarlm(
+  prices ~ AREA, 
+  data = BZ_dolomiti_ski_areas, 
+  listw= knn6BZ.listw
+  )
+summary(SAR)
+
+```
+
+To estimate the SDEM model using the Maximum likelihood estimator we can use the function "errorsarlm" with specification "emixed",
+
+```{r}
+
+SDEM = errorsarlm(
+  prices ~ AREA, 
+  data = BZ_dolomiti_ski_areas, 
+  listw= knn6BZ.listw,
+  etype = "emixed"
+  )
+summary(SDEM)
+
+```
+To estimate the SEM model using the Maximum likelihood estimator we can use the function "errorsarlm",
+
+```{r}
+
+SEM = errorsarlm(
+  prices ~ AREA, 
+  data = BZ_dolomiti_ski_areas, 
+  listw = knn6BZ.listw
+  )
+summary(SEM)
+
+```
+
+To estimate the LDM model using the OLS estimator we can use the function "errorsarlm",
+
+```{r}
+
+LDM = lmSLX(
+  prices ~ AREA, 
+  data = BZ_dolomiti_ski_areas,
+  listw = knn6BZ.listw
+  )
+summary(LDM)
+
+```
 
