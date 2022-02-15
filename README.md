@@ -22,7 +22,7 @@ In order to run this project's Python notebook, it is recommended to preferably 
 - `Shapely==1.7.1`,
 - `pyproj==3.3.0`.
 
-In order to be able to run the R norebook, the following libraries are required: 
+In order to be able to run the R nortebook, the following libraries are required: 
 - `rgdal`,
 - `spdep`,
 - `boot`.
@@ -32,11 +32,10 @@ In order to be able to run the R norebook, the following libraries are required:
 
 Clone this repository in a local directory typing `git clone xx` in the command line.
 
-it is strongly recommended to create a virtual environment in which to install the correct versions of the required Python libraries:
+It is strongly recommended to create a virtual environment in which to install the correct versions of the required Python libraries:
 - if you create the environment via virtualenv, you can type `pip install -r requirements.txt` to install all the libraries used;
 - if you prefer to work with Anaconda's evironment, you can simply type `conda env create --file environment.yaml` to create the environment containing all the libraries in the appropriate versions.
 
-dolo
 <br>
 <h2><b>Code structure</b></h2>
 
@@ -54,14 +53,14 @@ Code tree:
 
 ```
 ├── data
-│   	├── area_dolomiti_BZ
-│   	├── Castelrotto_raster
-│   	├── Limiti01012021_g
-│   	├── Raster_alpine_region
-│   	├── Ski_lift_data
-│   	├── Ski_slopes_data
-│   	├── altoadige.pbf
-│   	└── I_nove_Sistemi_delle_Dolomiti_UNESCO.kml
+│  	├── area_dolomiti_BZ
+│  	├── Castelrotto_raster
+│  	├── Limiti01012021_g
+│  	├── Raster_alpine_region
+│  	├── Ski_lift_data
+│  	├── Ski_slopes_data
+│  	├── altoadige.pbf
+│  	└── I_nove_Sistemi_delle_Dolomiti_UNESCO.kml
 │  
 ├── notebooks_html
 │
@@ -87,4 +86,4 @@ Code tree:
 <br>
 <h2><b>Report and Script exploration</b></h2>
 
-A more in-depth explanation of the project can be found in the file project_report.pdf. You can also view the executed scripts (without cloning the repository locally) at this <a href="https://elypaolazz.github.io/geosp_pages/index.html">address </a>.
+A more in-depth explanation of the project can be found in the file `project_report.pdf`. You can also view the executed scripts (without cloning the repository locally) at this <a href="https://elypaolazz.github.io/geosp_pages/index.html">address </a>.

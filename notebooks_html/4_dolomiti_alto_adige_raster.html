@@ -14586,6 +14586,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">rasterio</span> <span class="k">as</span> <span class="nn">rio</span>
 <span class="kn">from</span> <span class="nn">owslib.wms</span> <span class="kn">import</span> <span class="n">WebMapService</span>
 <span class="kn">from</span> <span class="nn">rasterio</span> <span class="kn">import</span> <span class="n">MemoryFile</span>
@@ -14610,7 +14611,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Explore-province's-geoservices">Explore province's geoservices<a class="anchor-link" href="#Explore-province's-geoservices">&#182;</a></h3><h4 id="Web-Map-Services">Web Map Services<a class="anchor-link" href="#Web-Map-Services">&#182;</a></h4><p>In addition to offering Web Features Services, the Geoportal also has a Web Map Service that makes available data such as ortophotos and DTMs of various types.</p>
+<h3 id="Explore-province's-geoservices">Explore province's geoservices<a class="anchor-link" href="#Explore-province's-geoservices">&#182;</a></h3><h4 id="Web-Map-Services">Web Map Services<a class="anchor-link" href="#Web-Map-Services">&#182;</a></h4><p>In addition to offering Web Features Services, the Geoportal also has a Web Map Service that makes available data such as ortophotos and DTMs of various types. We can explore the service using <code>owslib.wms</code>' <code>WebMapServices()</code>:</p>
 
 </div>
 </div>
@@ -14748,7 +14749,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>[&#39;EPSG:25832&#39;, &#39;EPSG:3857&#39;, &#39;CRS:84&#39;, &#39;EPSG:4326&#39;]</pre>
+<pre>[&#39;CRS:84&#39;, &#39;EPSG:3857&#39;, &#39;EPSG:25832&#39;, &#39;EPSG:4326&#39;]</pre>
 </div>
 
 </div>
@@ -14802,7 +14803,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Get the image:</p>
+<p>Get the image using <code>owslib.wms</code>' <code>getmap()</code>:</p>
 
 </div>
 </div>
@@ -14834,7 +14835,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Visualize the ortophoto:</p>
+<p>Get the image with <code>rasterio</code>'s <code>MemoryFile()</code> and visualize the ortophoto with <code>show()</code>:</p>
 
 </div>
 </div>
@@ -14902,7 +14903,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>It appears to be cutted in the area of interest (Dolomiti), so let's try with older data:</p>
+<p>The ortophoto appears to be cutted in the area of interest (Dolomiti), so let's try with older data:</p>
 
 </div>
 </div>
@@ -15105,7 +15106,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Visualize RGB colours:</p>
+<p>Visualize RGB colours using <code>rasterio</code>'s <code>show()</code> by specifying cmap:</p>
 
 </div>
 </div>
@@ -15288,7 +15289,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>We will use the DTM of the whole province of Bolzano's alpine region to make sure that our area is included.</p>
+<p>We will use the DTM of the whole province of Bolzano's Alpine region to make sure that our area is included.</p>
 
 </div>
 </div>
@@ -15296,7 +15297,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Open downloaded DTM with rasterio:</p>
+<p>Open downloaded DTM with <code>rasterio</code>'s <code>open()</code>:</p>
 
 </div>
 </div>
@@ -15497,7 +15498,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>First we have to to get features from GeoDataFrame so that the <code>rasterio</code>'s functions is able to process them.</p>
+<p>First we have to to get features from GeoDataFrame so that the <code>rasterio</code>'s functions is able to process them. For this procedure we use the function <code>getFeatures()</code>, defined during the lactures.</p>
 
 </div>
 </div>
@@ -15691,7 +15692,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Indagate-the-altitude-difference-of-the-longest-cableway">Indagate the altitude difference of the longest cableway<a class="anchor-link" href="#Indagate-the-altitude-difference-of-the-longest-cableway">&#182;</a></h3><p>Since DTM could contain data about the 3rd dimension (altitude), let's indagate it to obtain some interesting information, such as the cableways' altitude difference. In this process we will only consider one cable car, the largest one, however, as the DTM of the whole province is available it is clearly possible to calculate the height difference of each of them. However, extending the process to all ropeways requires handling large files which we want to avoid for this notebook.</p>
+<h3 id="Indagate-the-altitude-difference-of-the-longest-cableway">Indagate the altitude difference of the longest cableway<a class="anchor-link" href="#Indagate-the-altitude-difference-of-the-longest-cableway">&#182;</a></h3><p>In the previous analysis we explored the ski slopes and ski lifts of the area. Since DTM could contain data about the 3rd dimension (altitude), let's indagate it to obtain some interesting information, such as the ski lifts' altitude difference.</p>
+<p>In this process we will only consider one cableway, the longest one, however, as the DTM of the whole province is available, it is clearly possible to calculate the height difference of each of them. However, extending the process to all ropeways requires handling and downloading large files which we want to avoid for this notebook.</p>
 
 </div>
 </div>
@@ -16180,7 +16182,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h4 id="Download-DTM-data-with-vertical-dimension">Download DTM data with vertical dimension<a class="anchor-link" href="#Download-DTM-data-with-vertical-dimension">&#182;</a></h4><p>The province's Geoportal allow to bounding the area of interest to avoid handling the whole province raster (too large a file). So we can download Cstelrotto's area DTM.</p>
+<h4 id="Download-DTM-data-with-vertical-dimension">Download DTM data with vertical dimension<a class="anchor-link" href="#Download-DTM-data-with-vertical-dimension">&#182;</a></h4><p>The province's Geoportal allow to bounding the area of interest to avoid handling the whole province raster (too large a file). So we can download Castelrotto's area DTM.</p>
 <p><img src="notebooks_images\Geoportal_Castelrotto.png" alt=""></p>
 
 </div>
@@ -16189,7 +16191,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Open Castelrotto's DTM:</p>
+<p>Open and show Castelrotto's DTM:</p>
 
 </div>
 </div>
@@ -16526,7 +16528,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>We use a function to convert Points' longitude and latitude:</p>
+<p>We define a function to convert Points' longitude and latitude values:</p>
 
 </div>
 </div>
@@ -16553,7 +16555,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Create two arrays for x and y (longitude and latitude):</p>
+<p>Create two arrays for x and y (longitude and latitude) applying the previous defined function:</p>
 
 </div>
 </div>
@@ -16596,9 +16598,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Point</span><span class="p">,</span><span class="n">LineString</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Point</span><span class="p">,</span> <span class="n">LineString</span>
 <span class="n">lengths</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">previousPoint</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">length</span> <span class="o">=</span> <span class="mi">0</span>
@@ -16625,7 +16625,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lengths</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># list of updated lenghts point to point:</span>
+<span class="n">lengths</span>
 </pre></div>
 
      </div>

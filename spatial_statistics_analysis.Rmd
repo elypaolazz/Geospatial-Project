@@ -163,7 +163,7 @@ text(
 
 #### Which are the most extensive resorts (in terms of area)?
 
-```{r fig.width=12}
+```{r fig.height=8, fig.width=14}
 
 sorted <- BZ_dolomiti_ski_areas[order(-BZ_dolomiti_ski_areas$AREA),]
 head(sorted@data)
@@ -391,7 +391,7 @@ moran.test(BZ_dolomiti_ski_areas$prices, dnb199.listw, randomisation = FALSE)
 
 ```
 
-The test was performed under the assumption of normality since radomisation parameter is set on False. Let's try under the assumption of randomization:
+The test was performed under the assumption of normality since randomisation parameter is set on False. Let's try under the assumption of randomization:
 ```{r}
 
 moran.test(BZ_dolomiti_ski_areas$prices, knn1BZ.listw, randomisation = TRUE)
@@ -428,7 +428,7 @@ moran.mc(BZ_dolomiti_ski_areas$prices, dnb199.listw, nsim = 999)
 
 ```
 
-The values are only slightly different according to the 3 approaches used (especially between normality and radomization assumptions). When more neighbours are considered (both in the knn and in the critical cut-off) there seems to be a very small positive global spatial autocorrelation. In the most significant case of the knn, with 6 and 8 neighbours and in the case of the highest distances with the critical cut-off, it seems to reach at most a positive correlation of 0.12. This is actually very low and makes us think that there is no effective global correlation.
+The values are only slightly different according to the 3 approaches used (especially between normality and randomization assumptions). When more neighbours are considered (both in the knn and in the critical cut-off) there seems to be a very small positive global spatial autocorrelation. In the most significant case of the knn, with 6 and 8 neighbours and in the case of the highest distances with the critical cut-off, it seems to reach at most a positive correlation of 0.12. This is actually very low and makes us think that there is no effective global correlation.
 
 
 ## The Moran’s I test of spatial autocorrelation in OLS residuals
