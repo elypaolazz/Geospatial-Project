@@ -30,11 +30,13 @@ In order to be able to run the R nortebook, the following libraries are required
 <br>
 <h2><b>Installation</b></h2>
 
-Clone this repository in a local directory typing `git clone xx` in the command line.
+Clone this repository in a local directory typing `git clone https://github.com/elypaolazz/Geospatial-Project.git` in the command line.
 
 It is strongly recommended to create a virtual environment in which to install the correct versions of the required Python libraries:
 - if you create the environment via virtualenv, you can type `pip install -r requirements.txt` to install all the libraries used;
 - if you prefer to work with Anaconda's evironment, you can simply type `conda env create --file environment.yaml` to create the environment containing all the libraries in the appropriate versions.
+
+For the R libraries installation, it will only be required to run the first chunk of the `5_spatial_statistics_analysis.Rmd` notebook.
 
 <br>
 <h2><b>Code structure</b></h2>
