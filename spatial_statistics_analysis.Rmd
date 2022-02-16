@@ -454,7 +454,7 @@ points(BZ_dolomiti_ski_areas, col = colours[findInterval(studres, resdistr, all.
 
 ```
 
-We can now apply the test to the studentized residuals of the `LinearSolow` model, for different specifications of the spatial weights matrix
+We can now apply the test to the studentized residuals of the `LinearSolow` model, for different specifications of the spatial weights matrix:
 
 ```{r}
 
@@ -508,11 +508,13 @@ ti = (boot1$t0 - mean(boot1$t))/sqrt(var(boot1$t))
 plot(boot1)
 
 ```
-COMMENTA
+
+
 
 ---
 
-## Descriptive spatial statistics for areal data (local analysis)
+## Descriptive spatial statistics for areal data (local spatial spillover)
+
 Moran's I-statistic is a global measure and therefore does not allow to identify local patterns of spatial autocorrelation. 
 As we saw in class in many circumstances, however, it may also be of interest to assess the presence of local spatial clusters and to check the specific contribution of any particular region to the global pattern of spatial dependence. 
 
@@ -749,35 +751,7 @@ In this point we deal with the three main specifications of linear spatial regre
 
 ### 1. Models Estimation
 
-In order to estimate the SDM model using the Maximum likelihood estimator we can use the function `lagsarlm` with "mixed" specification :
-
-```{r}
-library(spatialreg) 
-
-SDM = lagsarlm(
-  prices ~ AREA, 
-  data = BZ_dolomiti_ski_areas, 
-  listw = knn6BZ.listw,
-  type = "mixed"
-  )
-
-summary(SDM)
-
-```
-
-To estimate the SAR model using the Maximum likelihood estimator we can use the function "lagsarlm",
-
-```{r}
-
-SAR = lagsarlm(
-  prices ~ AREA, 
-  data = BZ_dolomiti_ski_areas, 
-  listw= knn6BZ.listw
-  )
-summary(SAR)
-
-```
-
+For the empirical situations where theoretical or substantive considerations indicate the potential occurrence of local spillovers, the proper specification is the spatial Durbin error model (SDEM).
 To estimate the SDEM model using the Maximum likelihood estimator we can use the function "errorsarlm" with specification "emixed",
 
 ```{r}
@@ -785,7 +759,7 @@ To estimate the SDEM model using the Maximum likelihood estimator we can use the
 SDEM = errorsarlm(
   prices ~ AREA, 
   data = BZ_dolomiti_ski_areas, 
-  listw= knn6BZ.listw,
+  listw= knn8BZ.listw,
   etype = "emixed"
   )
 summary(SDEM)
@@ -816,4 +790,26 @@ LDM = lmSLX(
 summary(LDM)
 
 ```
+
+---
+
+```{r}
+
+# The LM test can be computed using the function "lm.LMtests"
+OLSmodel = lm(
+  prices~AREA, 
+  data = BZ_dolomiti_ski_areas
+  )
+
+natOLSlmTests = lm.LMtests(
+  OLSmodel, 
+  knn8BZ.listw,
+  test = c("LMerr", "LMlag", "RLMerr", "RLMlag")
+  )
+summary(natOLSlmTests)
+
+
+```
+
+
 

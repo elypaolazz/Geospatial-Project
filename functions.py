@@ -1,5 +1,6 @@
 import os
 import geopandas as gpd
+import pandas as pd
 
 
 # Function to download and extract zip folders
@@ -46,21 +47,6 @@ def city_coordinates_label(geodf, city_type_col):
     geo_capoluighi = gpd.GeoDataFrame(geo_capoluighi,geometry=geo_capoluighi['geometry'],crs=4326)
     return geo_capoluighi
 
-# Function to obtain the percentage of each Dolomitic system in the province
-# def province_systems_percentage(province, system, geodf_dolomities):
-    
-#     geodf_dolomities = geodf_dolomities
-#     load_province(province, 'data\Limiti01012021_g\ProvCM01012021_g')
-    
-#     system_geodf = geodf_dolomities[geodf_dolomities.Name == system]
-#     system_area = geodf_dolomities[geodf_dolomities.Name == system]['area'].values[0]
-    
-#     system_area_clipped = system_geodf.to_crs(epsg=32632).clip(province_geodf.to_crs(epsg=32632)).area/10**6
-    
-#     percentage_of_system = (system_area_clipped.values[0]/system_area)*100
-
-#     print(round(percentage_of_system, 2), "% of the", " '",system,"' ", "is in province of ", province, sep="")
-    
 # Function to obtain the percentage of each Dolomitic system in the Dolomiti's municipalities of the province
 def mun_systems_area(mun):
     
@@ -85,7 +71,7 @@ def load_province(province_capital, path):
     province = provinces[provinces.DEN_PROV == province_capital]
     return province
 
-
+# Function to clip Dolomiti's GeoDataFrame on a province territory
 def lead_province_clipped_dolomiti(province_capital, path):
     geodf_dolomities = load_geodf_dolomities('data\I nove Sistemi delle Dolomiti UNESCO.kml')
     
@@ -136,6 +122,7 @@ def load_province_dolomiti_mun(code_prov, path):
     return geo_dolomiti_mun
 
 
+# Function to obtain the percentage of Dolomitic area in the Dolomiti's regions
 def regions_systems_percentage(region, geodf_dolomities):
     
     regions_path = "data\Limiti01012021_g\Reg01012021_g"
@@ -155,6 +142,7 @@ def regions_systems_percentage(region, geodf_dolomities):
     return [region_geodf.DEN_REG.values[0], round(dolomiti_area_clipped/10**6, 2), round(percentage_of_system, 2)]
 
 
+# Function to dissolve the Dolomiti area of a province
 def dissolve_province_dolomiti_area(code_prov):
     geo_dolomiti_mun = load_province_dolomiti_mun(code_prov, 'data\Limiti01012021_g')
     geo_dolomiti_mun["territory"] = 'dolomiti'
@@ -162,14 +150,7 @@ def dissolve_province_dolomiti_area(code_prov):
     area_dolomiti = area_dolomiti.to_crs(epsg=4326).dissolve(by='territory')
     return area_dolomiti
     
-    
-def load_BZ_dolomiti_ski_lift_data(path):
-    ski_lifts_path = path
-    ski_lifts_BZ = gpd.read_file(ski_lifts_path)
-    ski_lifts_BZ = ski_lifts_BZ.to_crs(epsg=4326)
-    ski_lifts_BZ_clipped = ski_lifts_BZ.clip(load_province_dolomiti_mun(21, 'data\Limiti01012021_g'))
-    return ski_lifts_BZ_clipped
-
+# Function to load the Dolomiti ski lift of province of Bolzano
 def load_BZ_dolomiti_ski_lift_data(path):
     ski_lifts_path = path
     ski_lifts_BZ = gpd.read_file(ski_lifts_path)
