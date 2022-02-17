@@ -78,7 +78,7 @@ Code tree:
 │
 ├── 5_spatial_statistics_analysis.Rmd
 │
-├── environment.yml.Rmd
+├── environment.yml
 │
 ├── function.py
 │
@@ -86,7 +86,7 @@ Code tree:
 │
 ├── requirements.txt
 │
-└── skipass_price_data_building
+└── skipass_price_data_building.ipynb
 ```
 
 <br>
